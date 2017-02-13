@@ -17,10 +17,14 @@ class StartController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //try! FileManager.default.removeItem(at: Realm.Configuration.defaultConfiguration.fileURL!)
+        //purgeData()
         realm = try! Realm()
     }
 
+    func purgeData(){
+        try! FileManager.default.removeItem(at: Realm.Configuration.defaultConfiguration.fileURL!)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

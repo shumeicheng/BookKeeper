@@ -23,7 +23,7 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         totalIncome = 0.0
         totalExpense = 0.0
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if(section == 1){
             return 0
@@ -105,6 +105,23 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
             cell.detailTextLabel?.text = "$" + cost
             totalExpense = totalExpense! + (expense?.cost)!
         }else if (indexPath.section == 3) { // total revenue
+            totalIncome = 0
+            let clients = realm?.objects(Client.self)
+            for client in clients! {
+                let products = client.products
+                for product in products{
+                    totalIncome = totalIncome! + product.cost
+                }
+            }
+            totalExpense = 0.0
+            let expenses = realm?.objects(Expense.self)
+            if(expenses?.count == 0){
+                totalExpense = 0.0
+            }else {
+                for expense in expenses! {
+                    totalExpense = totalExpense! + expense.cost
+                }
+            }
             let total = totalIncome! - totalExpense!
             let str = "$" + String(total)
             cell.textLabel?.text = str
@@ -135,11 +152,12 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
                 let name = alert.textFields?[0].text
                 var cost: String!
                 cost = ((alert.textFields?[1].text)!)
-                
+                let date = Date()
                 try! self.realm?.write {
                     let  expense = Expense()
                     expense.name = name!
                     expense.cost = Float(cost)!
+                    expense.date = date
                     self.realm?.add(expense)
                 }
                 tableView.reloadData()

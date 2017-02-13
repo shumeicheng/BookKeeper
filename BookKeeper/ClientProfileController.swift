@@ -87,6 +87,9 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
             alert.addTextField(configurationHandler: nil)
             alert.textFields?[0].delegate = self
             alert.textFields?[1].delegate = self
+            let currentDate = Date()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd mm YYYY"
             alert.textFields?[0].placeholder = "start date"
             alert.textFields?[1].placeholder = "end date"
             
@@ -95,6 +98,7 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
                 // save the start and end date.
                 startDate = alert.textFields?[0].text
                 endDate = alert.textFields?[1].text
+                print(startDate,endDate)
                 alert.dismiss(animated: true, completion: nil)
             })
             alert.addAction(ok)
@@ -137,8 +141,7 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
             
             cell.textLabel?.text = name!
             cell.detailTextLabel?.text = "$" + cost + " " + dateString
-        }
-        if(indexPath.section == 1){
+        }else if(indexPath.section == 1){
             cell.textLabel?.numberOfLines = 0
             
             cell.textLabel?.text = client?.specialNotes
