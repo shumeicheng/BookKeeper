@@ -28,11 +28,7 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(products?.count == 0){
-            return 10
-        }else {
             return products!.count
-        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -53,11 +49,15 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
                 try! realm!.write {
                     realm!.delete(product!)
                 }
+                products = realm?.objects(Product.self)
+                 tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+                tableView.reloadData()
+
+
             }
         }
     }
 
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if(products?.count == 0 ){
             let alert = UIAlertController(title: "Please add product first", message: "Click Add button to add a product.", preferredStyle: .alert)
@@ -74,8 +74,10 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
             (action) in
             let product = self.products?[indexPath.row]
             try! self.realm?.write(){
-                self.client?.products.append((product)!)
+                self.client?.products.append(product!)
                 let date = serviceDate()
+                date.date = Date() 
+                self.realm?.add(date)
                 self.client?.dates.append(date)
             }
             tableView.reloadData()
@@ -101,6 +103,9 @@ class ProductController: UIViewController, UITableViewDelegate, UITableViewDataS
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: {
             (action) in
             // save product in Realm
+            if( alert.textFields?[0].text == "" || alert.textFields?[1].text == ""){
+                return
+            }
             let product = Product()
             product.name = (alert.textFields?[0].text)!
             product.cost = Float((alert.textFields?[1].text)!)!

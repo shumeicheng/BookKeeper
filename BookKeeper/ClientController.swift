@@ -21,11 +21,8 @@ class ClientController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if((clients?.count)!>0 ){
-            return (clients?.count)!
-        }else{
-            return 10
-        }
+     
+        return (clients?.count)!
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -37,11 +34,26 @@ class ClientController: UIViewController, UITableViewDelegate, UITableViewDataSo
         return cell
     }
     
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.delete {
+            if(indexPath.row < (clients?.count)!) {
+                let client = clients?[indexPath.row]
+                try! realm!.write {
+                    realm!.delete(client!)
+                }
+                clients = realm?.objects(Client.self)
+                tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+                tableView.reloadData()
+                
+                
+            }
+        }
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell =  tableView.dequeueReusableCell(withIdentifier: "ClientTableViewCell", for: indexPath) as! ClientTableViewCell
         
         let client = clients?[indexPath.row]
-
         // add product or get report, edit client profile
         let alert = UIAlertController(title: "Client Profile", message: "Open client profile?", preferredStyle: .alert)
         let okAction = UIAlertAction(title: "Ok", style: .default, handler: { (action) in

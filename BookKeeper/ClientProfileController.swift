@@ -26,6 +26,36 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
         try! realm = Realm()
         clientTiltle.title = (client?.firstName)! + " " + (client?.lastName)!
         products = client?.products
+        alertCheckAdd()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        alertCheckAdd()
+    }
+
+    func alertAdd(title: String, message: String) -> Void{
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "Ok", style: .default, handler: {
+          (action) in
+          
+        }
+        )
+        alert.addAction(ok)
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func alertCheckAdd(){
+        let noProduct = client?.products.count == 0
+        let noNotes = client?.specialNotes == ""
+        if(noProduct && noNotes == false){
+            alertAdd(title: "No Product yet!", message: "You can click Add button to add.")
+        }else if(noProduct == false && noNotes){
+            alertAdd(title: "No Special Notes yet!", message: "You can click Add button to add.")
+        }else if(noProduct && noNotes){
+            let alertNote = alertAdd(title: "No Special Notes or Product yet!", message: "You can click Add button to add. Thanks!")
+            alertAdd(title: "No Product yet!", message: "Click Add button to add.")
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -41,10 +71,13 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
         // products
         // special notes
         if( section == 0 ){
-            if ((products?.count)! > 0 ){
-                return (products?.count)!
+            return (products?.count)!
+            
+        }else if(section == 1 ){
+            if(client?.specialNotes == ""){
+                return 0
             }else {
-                return 1
+                return  1//specital notes
             }
         }else {
             return 1
@@ -52,7 +85,7 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        print("begin editing")
+       
         let datePickerView: UIDatePicker = UIDatePicker()
         datePickerView.datePickerMode = UIDatePickerMode.date
         textField.inputView = datePickerView
@@ -63,9 +96,9 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
     
     func handleDatePicker(sender: UIDatePicker){
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd MMM yyyy"
+        dateFormatter.dateFormat = "MMM dd yyyy"
         let dateString = dateFormatter.string(from: sender.date)
-        print(dateString)
+        
         thisField?.text = dateString // HAVE TO USE THIS VARIABLE TO DISPLAY ON THE TEXTFIELD
     }
     
@@ -88,18 +121,58 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
             alert.textFields?[0].delegate = self
             alert.textFields?[1].delegate = self
             let currentDate = Date()
-            let formatter = DateFormatter()
-            formatter.dateFormat = "dd mm YYYY"
-            alert.textFields?[0].placeholder = "start date"
-            alert.textFields?[1].placeholder = "end date"
+            alert.textFields?[0].placeholder = "please click here for start date"
+            alert.textFields?[1].placeholder = "please click here for end date"
             
             let ok = UIAlertAction(title: "Ok", style: .default, handler: {
                 (action) in
                 // save the start and end date.
+                var startD = Date()
+                var endD = Date()
+                let formatter =  DateFormatter()
                 startDate = alert.textFields?[0].text
                 endDate = alert.textFields?[1].text
-                print(startDate,endDate)
+                if(startDate == "" ){
+                    self.alertAdd(title: "Empty Start Date", message: "Please enter start date!")
+                    return
+                }
+                if(endDate == ""){
+                    self.alertAdd(title: "Empty End Date", message: "Please enter end date!")
+                }
+                formatter.dateFormat = "MMM dd yyyy"
+
+                startD = formatter.date(from: (startDate)!)!
+                endD = formatter.date(from: (endDate)!)!
+                
+                
                 alert.dismiss(animated: true, completion: nil)
+                var setOfProducts = [Product]()
+                var setOfDates = [serviceDate]()
+                if(endD > startD){
+                    let vc = self.storyboard?.instantiateViewController(withIdentifier: "ClientIncome") as! ClientIncome
+                    
+                    vc.client = self.client
+                    // create a list of products within the star and end dates
+                    var count = 0
+                    for prod in (self.client?.products)!{
+                        let thisDate = self.client?.dates[count]
+                        if((thisDate?.date!)! < endD || (thisDate?.date)! == endD){
+                            if((thisDate?.date!)! > startD || thisDate?.date == startD){
+                                  setOfProducts.append((prod))
+                                  setOfDates.append((self.client?.dates[count])!)
+                            }
+                        }
+                     
+                        count = count + 1
+                    }//for prod
+                    if( setOfProducts.count == 0){
+                        self.alertAdd(title: "No product found", message: "During searching period.")
+                        return
+                    }
+                    vc.products = setOfProducts
+                    vc.dates = setOfDates
+                    self.present(vc, animated: true, completion: nil)
+                }
             })
             alert.addAction(ok)
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -109,7 +182,34 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
     }
    
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        
+      
+        if editingStyle == UITableViewCellEditingStyle.delete {
+            if(indexPath.section == 0 ){
+                var product: Product?
+                var date: serviceDate?
+                if(((products?.count)! > indexPath.row)){
+                   // product = products?[indexPath.row]
+                    date = client?.dates[indexPath.row]
+                    try! realm?.write{
+                       // realm?.delete(product!)
+                        products?.remove(objectAtIndex: indexPath.row)
+
+                        realm?.delete((date)!)
+                    }
+                }
+                //update products
+                products = client?.products
+            } else if (indexPath.section == 1 ){
+                try! realm?.write {
+                    client?.setValue("", forKey: "specialNotes")
+                    
+                }
+            }
+            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
+            tableView.reloadData()
+
+        }
+ 
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -184,7 +284,11 @@ class ClientProfileController: UIViewController,UITableViewDataSource,UITableVie
                 (action) in
                 let note = alertNote.textFields?[0].text
                 try! self.realm?.write {
-                    self.client?.specialNotes = (self.client?.specialNotes)! + ", " + note!
+                    if(self.client?.specialNotes == ""){
+                        self.client?.specialNotes = note!
+                    }else{
+                        self.client?.specialNotes = (self.client?.specialNotes)! + ", " + note!
+                    }
                 }
                 self.tableView.reloadData()
             })

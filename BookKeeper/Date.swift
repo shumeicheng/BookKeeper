@@ -10,5 +10,5 @@ import Foundation
 import RealmSwift
 
 class serviceDate:Object {
-   var date: NSDate = Date() as NSDate
+   dynamic var date: Date?
 }
