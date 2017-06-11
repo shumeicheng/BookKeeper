@@ -331,6 +331,15 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         alert.addAction(takePhoto)
     }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+           // imageView.contentMode = .ScaleAspectFit
+            //imageView.image = pickedImage
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
     // select a photo
     func selectAPhoto( alert: UIAlertController){
         let selectPhoto = UIAlertAction(title: "Select a Photo", style: .default, handler: {(action) in

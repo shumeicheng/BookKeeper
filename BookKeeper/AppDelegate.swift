@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RealmSwift
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let config = Realm.Configuration(
+            // Set the new schema version. This must be greater than the previously used
+            // version (if you've never set a schema version before, the version is 0).
+            schemaVersion: 1,
+            migrationBlock: { migration, oldSchemaVersion in
+                if oldSchemaVersion < 1 {
+                    // Apply any necessary migration logic here.
+                    migration.enumerateObjects(ofType: Expense.className()){ oldObject, newObject in
+                        newObject!["image"] = nil
+                        
+                    }
+                }
+        })
+        Realm.Configuration.defaultConfiguration = config
         return true
     }
 

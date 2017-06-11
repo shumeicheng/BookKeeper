@@ -12,4 +12,5 @@ class Expense: Object {
     dynamic var name: String = ""
     dynamic var cost: Float = 0.0
     dynamic var date: Date?
+    dynamic var image: NSData?
 }
