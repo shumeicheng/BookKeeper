@@ -8,6 +8,18 @@
 
 import Foundation
 import UIKit
-class BalanceSheetTableViewCell : UITableViewCell {
+
+protocol BalanceSheetControllerDelegate{
+    func TakeAPicture()
+}
+
+class BalanceSheetTableViewCell : UITableViewCell{
+    var delegate: BalanceSheetController?
     
+    @IBOutlet weak var imageExpense: UIImageView!
+    // add take a picture action
+    @IBAction func PhotoButtonPress(_ sender: Any) {
+        delegate?.TakeAPicture(tableCell: self)
+  
+    }
 }

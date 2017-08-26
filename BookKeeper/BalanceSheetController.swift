@@ -12,7 +12,10 @@ import RealmSwift
 import MessageUI
 
 
-class BalanceSheetController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+class BalanceSheetController: UIViewController, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate,
+    UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate{
     var realm: Realm?
     var totalIncome: Float?
     var totalExpense: Float?
@@ -22,10 +25,13 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
     var expenses: [Expense]?
     var myClients: [Client]? // Date for each Income
     var indexToProducts: [Int]? // for each client index to dates and products
+    var thisTableCell: BalanceSheetTableViewCell?
     
     let sections = ["Income","Expenses","Revenue"]
     
+    
     @IBOutlet weak var tableView: UITableView!
+    //@IBOutlet weak var expenseImage: UIImageView!
     
     func reloadExpenses(){
         expenses = [Expense]()
@@ -114,9 +120,11 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         return dateString
     }
     
+     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "BalanceSheetTableViewCell", for: indexPath) as! BalanceSheetTableViewCell
+        cell.delegate = self 
         if(indexPath.section == 0 ){
             
             if(myClients?.count == 0){
@@ -317,15 +325,26 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-    // add take a picture action
-    func takeAPhoto(alert: UIAlertController){
+    func TakeAPicture(tableCell: BalanceSheetTableViewCell) {
+        print("TakeAPicture")
+        let alert = UIAlertController(title: "Take a Picture", message: "Take a Photo", preferredStyle: .alert)
+        takeAPhoto(alert: alert,tableCell: tableCell)
+        selectAPhoto(alert: alert,tableCell: tableCell)
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func takeAPhoto(alert: UIAlertController,tableCell: BalanceSheetTableViewCell){
         let takePhoto = UIAlertAction(title: "Take a Photo", style: .default, handler: {(action) in
             if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
                 var imagePicker = UIImagePickerController()
-                imagePicker.delegate = self
+                
+                imagePicker.delegate = self as UIImagePickerControllerDelegate & UINavigationControllerDelegate
                 imagePicker.sourceType = UIImagePickerControllerSourceType.camera;
                 imagePicker.allowsEditing = false
-                self.present(imagePicker, animated: true, completion: nil)
+                self.thisTableCell = tableCell
+                self.present(imagePicker, animated: true, completion: {
+
+                })
             }
         })
         alert.addAction(takePhoto)
@@ -333,26 +352,30 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
-           // imageView.contentMode = .ScaleAspectFit
-            //imageView.image = pickedImage
+            
+            thisTableCell?.imageExpense.contentMode = .scaleToFill
+            thisTableCell?.imageExpense.image = pickedImage
         }
-        
+        // find that expense item insert the photo to the realmData.
         dismiss(animated: true, completion: nil)
     }
     
     // select a photo
-    func selectAPhoto( alert: UIAlertController){
+    func selectAPhoto( alert: UIAlertController,tableCell: BalanceSheetTableViewCell){
         let selectPhoto = UIAlertAction(title: "Select a Photo", style: .default, handler: {(action) in
             if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
                 var imagePicker = UIImagePickerController()
+                
                 imagePicker.delegate = self
                 imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary;
                 imagePicker.allowsEditing = true
-                self.present(imagePicker, animated: true, completion: nil)
+                //                self.present(imagePicker, animated: true, completion: nil)
             }
         })
         alert.addAction(selectPhoto)
     }
+    
+
     
     @IBAction func addExpenses(_ sender: Any) {
         let alert = UIAlertController(title: "Expenses", message: "Add Expenses?", preferredStyle: .alert)
@@ -368,9 +391,11 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
             if(cost == nil){
                 return
             }
+
             let date = Date()
             try! self.realm?.write {
                 let  expense = Expense()
+
                 expense.name = name!
                 expense.cost = Float(cost)!
                 expense.date = date
@@ -382,8 +407,7 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alert.addAction(cancelAction)
         alert.addAction(ok)
-        takeAPhoto(alert: alert)
-        selectAPhoto(alert: alert)
+
         present(alert, animated: true, completion: nil)
     }
     
@@ -391,3 +415,5 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         dismiss(animated: true, completion: nil)
     }
 }
+
+    

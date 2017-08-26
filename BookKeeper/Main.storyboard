@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="fYz-Va-8lZ">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="fYz-Va-8lZ">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -109,33 +109,56 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hQL-3z-mPU">
-                                <rect key="frame" x="0.0" y="125" width="375" height="542"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="86" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="hQL-3z-mPU">
+                                <rect key="frame" x="0.0" y="115" width="375" height="552"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BalanceSheetTableViewCell" textLabel="tZ0-OZ-eXP" detailTextLabel="Ni3-gy-tU3" style="IBUITableViewCellStyleSubtitle" id="uLs-xp-SaQ" customClass="BalanceSheetTableViewCell" customModule="BookKeeper" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BalanceSheetTableViewCell" textLabel="tZ0-OZ-eXP" detailTextLabel="Ni3-gy-tU3" rowHeight="86" style="IBUITableViewCellStyleSubtitle" id="uLs-xp-SaQ" customClass="BalanceSheetTableViewCell" customModule="BookKeeper" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="86"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="uLs-xp-SaQ" id="V27-tl-CCa">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="86"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ur0-zB-gS4" userLabel="photoButton">
+                                                    <rect key="frame" x="114" y="54" width="41" height="30"/>
+                                                    <state key="normal" title="Photo"/>
+                                                    <connections>
+                                                        <action selector="PhotoButtonPress:" destination="uLs-xp-SaQ" eventType="touchUpInside" id="Pqc-Wy-8E2"/>
+                                                    </connections>
+                                                </button>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="tZ0-OZ-eXP">
-                                                    <rect key="frame" x="15" y="4" width="34" height="21"/>
+                                                    <rect key="frame" x="15" y="26" width="34" height="21"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ni3-gy-tU3">
-                                                    <rect key="frame" x="15" y="25" width="44" height="15"/>
+                                                    <rect key="frame" x="15" y="47" width="44" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1Yc-fN-Am1">
+                                                    <rect key="frame" x="171" y="8" width="196" height="76"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="196" id="gck-B8-sxP"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ur0-zB-gS4" firstAttribute="bottom" secondItem="1Yc-fN-Am1" secondAttribute="bottom" id="0eL-h0-acX"/>
+                                                <constraint firstItem="1Yc-fN-Am1" firstAttribute="top" secondItem="V27-tl-CCa" secondAttribute="topMargin" id="NUj-jw-ZFX"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="1Yc-fN-Am1" secondAttribute="bottom" constant="-6.5" id="Xhs-VW-717"/>
+                                                <constraint firstItem="1Yc-fN-Am1" firstAttribute="leading" secondItem="ur0-zB-gS4" secondAttribute="trailing" constant="16" id="odu-eQ-M9g"/>
+                                                <constraint firstItem="1Yc-fN-Am1" firstAttribute="trailing" secondItem="V27-tl-CCa" secondAttribute="trailingMargin" id="t1M-Wd-vqr"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="imageExpense" destination="1Yc-fN-Am1" id="G8y-E1-ZYJ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>
@@ -175,7 +198,7 @@
                                 </items>
                             </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Balance Sheet" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1gv-1e-ZmC">
-                                <rect key="frame" x="78" y="72" width="220" height="31"/>
+                                <rect key="frame" x="78" y="72" width="220" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -193,7 +216,6 @@
                             <constraint firstItem="5Ot-g9-0f0" firstAttribute="top" secondItem="6ZH-FH-K2c" secondAttribute="bottom" id="bw3-rc-TIy"/>
                             <constraint firstItem="hQL-3z-mPU" firstAttribute="leading" secondItem="5Ot-g9-0f0" secondAttribute="leading" id="nUh-ua-CN8"/>
                             <constraint firstItem="hQL-3z-mPU" firstAttribute="trailing" secondItem="5Ot-g9-0f0" secondAttribute="trailing" id="nVs-JW-Y0P"/>
-                            <constraint firstItem="hQL-3z-mPU" firstAttribute="top" secondItem="5Ot-g9-0f0" secondAttribute="bottom" constant="61" id="yl2-yU-xf1"/>
                         </constraints>
                     </view>
                     <connections>
