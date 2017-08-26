@@ -332,7 +332,6 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
     }
     
     func TakeAPicture(tableCell: BalanceSheetTableViewCell) {
-        print("TakeAPicture")
         let alert = UIAlertController(title: "Take a Picture", message: "Take a Photo", preferredStyle: .alert)
         takeAPhoto(alert: alert,tableCell: tableCell)
         selectAPhoto(alert: alert,tableCell: tableCell)
@@ -361,6 +360,8 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
             
             thisTableCell?.imageExpense.contentMode = .scaleToFill
             thisTableCell?.imageExpense.image = pickedImage
+        }else{
+            print("Can not cast image!")
         }
         // find that expense item insert the photo to the realmData.
         var expense: Expense?
@@ -379,11 +380,11 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
         let selectPhoto = UIAlertAction(title: "Select a Photo", style: .default, handler: {(action) in
             if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.photoLibrary) {
                 var imagePicker = UIImagePickerController()
-                
+                self.thisTableCell = tableCell
                 imagePicker.delegate = self
                 imagePicker.sourceType = UIImagePickerControllerSourceType.photoLibrary;
                 imagePicker.allowsEditing = true
-                //                self.present(imagePicker, animated: true, completion: nil)
+                self.present(imagePicker, animated: true, completion: nil)
             }
         })
         alert.addAction(selectPhoto)
