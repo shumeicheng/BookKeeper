@@ -31,7 +31,7 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
     
     
     @IBOutlet weak var tableView: UITableView!
-    //@IBOutlet weak var expenseImage: UIImageView!
+    
     
     func reloadExpenses(){
         expenses = [Expense]()
@@ -124,7 +124,9 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell{
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "BalanceSheetTableViewCell", for: indexPath) as! BalanceSheetTableViewCell
-        cell.delegate = self 
+        cell.delegate = self
+        cell.photoButton.tag = indexPath.row
+        
         if(indexPath.section == 0 ){
             
             if(myClients?.count == 0){
@@ -159,6 +161,10 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
             }
             var expense: Expense!
             expense = expenses?[indexPath.row]
+            if ((expense.image) != nil) {
+                let image = UIImage(data:expense.image! as! Data)
+                cell.imageExpense.image = image
+            }
             let date = expense.date
             let dateString = getADateString(date: date!)
 
@@ -357,6 +363,14 @@ class BalanceSheetController: UIViewController, UITableViewDelegate, UITableView
             thisTableCell?.imageExpense.image = pickedImage
         }
         // find that expense item insert the photo to the realmData.
+        var expense: Expense?
+        try! realm?.write {
+            let exps = realm?.objects(Expense.self)
+            expense = exps?[(thisTableCell?.photoButton.tag)!]
+            expense?.image = UIImagePNGRepresentation( (thisTableCell?.imageExpense.image!)!)! as NSData
+            
+        }
+        
         dismiss(animated: true, completion: nil)
     }
     

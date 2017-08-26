@@ -17,6 +17,7 @@ class BalanceSheetTableViewCell : UITableViewCell{
     var delegate: BalanceSheetController?
     
     @IBOutlet weak var imageExpense: UIImageView!
+    @IBOutlet weak var photoButton: UIButton!
     // add take a picture action
     @IBAction func PhotoButtonPress(_ sender: Any) {
         delegate?.TakeAPicture(tableCell: self)
